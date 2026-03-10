@@ -21,7 +21,7 @@ function App() {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      if (location.pathname !== '/login' && location.pathname !== '/') {
+      if (location.pathname !== '/login' && location.pathname !== '/' && location.pathname !== '/visitor/pre-registration') {
         navigate('/login');
       }
       return;

@@ -23,6 +23,17 @@ app.get("/", (req,res) => {
 })
 
 app.use("/api/users", require("./routes/users"));
+app.use("/api/visitor", require("./routes/visitor"));
+
+// Add JSON error handler so failures return JSON instead of HTML
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Something went wrong",
+    error: err
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
