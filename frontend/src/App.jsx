@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { useUserContext } from './hooks/useUserContext'
 import { EmployeeList } from './components/Admin/EmployeeList'
 import { AddEmployeeForm } from './components/Admin/AddEmployeeForm'
+import { VisitorList } from './components/Admin/VisitorList'
 
 function App() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/employees" element={<EmployeeList />} />
         <Route path="/admin/employees/add" element={<AddEmployeeForm />} />
+        <Route path="/admin/visitors" element={<VisitorList />} />
       </Route>
     </Routes>
   )

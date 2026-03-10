@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DataTable from "react-data-table-component"
-import axios from 'axios'
+import { useFetch } from '../../hooks/useFetch';
 
 export const EmployeeList = () => {
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState([])
+  const { data: employeeData, error, loading } = useFetch(`${import.meta.env.VITE_API_URL}/api/users/allemployees`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  });
   const columns = [
     {
       name: "Name",
@@ -25,38 +27,15 @@ export const EmployeeList = () => {
       selector: row => row.phone,
     }
   ];
-  const getAllEmployees = async () => {
-    try {
-      setLoading(true);
-      await axios.get(`${import.meta.env.VITE_API_URL}/api/users/allemployees`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      })
-        .then((res) => {
-          setLoading(false);
-          console.log('Employee Fetched:', res.data);
-          setData(res.data.employees);
-        })
-        .catch((err) => {
-          console.error('Error fetching employees:', err?.response?.data?.message ?? err.message);
-        })
-        .finally(() => {
-          console.log('Employee fetch attempt completed');
-          setLoading(false);
-        });
-    } catch (error) {
-      console.error('Error fetching employees:', error.message);
-    }
+  if (loading) {
+    return <div>Loading...</div>;
   }
-
-  useEffect(() => {
-    getAllEmployees();
-  }, []);
-
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div>
-      <h1 className='font-bold text-3xl'>EmployeeList</h1>
+      <h1 className='font-bold text-3xl'>Employee List</h1>
       <div className='flex flex-row justify-between my-5'>
         <form className='flex flex-row gap-4 items-center'>
           <input type='text' placeholder='Search by name or email' className='border border-gray-300 rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500' />
@@ -69,7 +48,7 @@ export const EmployeeList = () => {
         </Link>
       </div>
       <div>
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={employeeData.employees} />
       </div>
     </div>
   )

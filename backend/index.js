@@ -24,8 +24,9 @@ app.get("/", (req,res) => {
 
 app.use("/api/users", require("./routes/users"));
 app.use("/api/visitor", require("./routes/visitor"));
+app.use("/api/admin", require("./routes/admin"));
 
-// Add JSON error handler so failures return JSON instead of HTML
+
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
   res.status(err.status || 500).json({
