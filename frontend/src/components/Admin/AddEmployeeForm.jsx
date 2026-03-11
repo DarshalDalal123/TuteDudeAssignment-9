@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export const AddEmployeeForm = () => {
   const [employeeData, setEmployeeData] = useState({
@@ -18,7 +19,6 @@ export const AddEmployeeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(employeeData);
     await axios.post(`${import.meta.env.VITE_API_URL}/api/users/signup`, employeeData, {
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export const AddEmployeeForm = () => {
       }
     })
       .then((res) => {
-        console.log('Employee added:', res.data);
+        toast.success(res.data.message);
         setEmployeeData({
           name: '',
           email: '',
@@ -37,6 +37,7 @@ export const AddEmployeeForm = () => {
         });
       })
       .catch((err) => {
+        toast.error(`Failed to add employee: ${err?.response?.data?.message ?? err.message}`);
         console.error('Error adding employee:', err?.response?.data?.message ?? err.message);
       });
   }

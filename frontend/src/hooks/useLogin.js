@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useUserContext } from "./useUserContext";
+import toast from "react-hot-toast";
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -12,11 +13,11 @@ export const useLogin = () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`, { email, password }, { withCredentials: true })
         .then((res) => {
-          console.log('Login successful:', res.data.message);
           if (res.data.success) {
             setIsLoading(true);
             setError(null);
             dispatch({ type: "SET_USER", payload: res.data.user });
+            toast.success(res.data.message);
             localStorage.setItem('token', res.data.token);
             if (res.data.user.role === 'admin') {
               navigate('/admin/dashboard');
@@ -24,14 +25,15 @@ export const useLogin = () => {
           }
         })
         .catch((err) => {
-          console.error('Login failed:', err.response ? err.response.data.message : err.message);
           setError(err.response ? err.response.data.message : err.message);
+          toast.error(err.response ? err.response.data.message : err.message);
         })
         .finally(() => {
           setIsLoading(false);
         });
     } catch (error) {
       setError(error.response ? error.response.data.message : error.message);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
   }
   return { login, isLoading, error };

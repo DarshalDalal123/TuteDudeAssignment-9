@@ -25,6 +25,8 @@ app.get("/", (req,res) => {
 app.use("/api/users", require("./routes/users"));
 app.use("/api/visitor", require("./routes/visitor"));
 app.use("/api/admin", require("./routes/admin"));
+app.use("/api/employee", require("./routes/employee"));
+app.use("/api/security", require("./routes/security"));
 
 
 app.use((err, req, res, next) => {

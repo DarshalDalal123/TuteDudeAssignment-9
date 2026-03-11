@@ -7,8 +7,6 @@ export const Login = () => {
   const { login, isLoading, error } = useLogin();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('email:', email);
-    console.log('password:', password);
     await login(email, password);
   }
   return (

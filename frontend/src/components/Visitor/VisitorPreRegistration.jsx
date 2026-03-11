@@ -4,11 +4,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactSelect from "react-select";
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import toast from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 export const VisitorPreRegistration = () => {
+  const navigate = useNavigate();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeOptions, setEmployeeOptions] = useState([]);
   const [visitDate, setVisitDate] = useState(new Date());
+  const [visitTime, setVisitTime] = useState('');
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState(null);
   const [formData, setFormData] = useState({
@@ -31,7 +35,11 @@ export const VisitorPreRegistration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedEmployee) {
-      alert("Please select an employee to meet.");
+      toast.error("Please select an employee to meet.");
+      return;
+    }
+    if (!visitTime) {
+      toast.error("Please select a visit time.");
       return;
     }
     const data = new FormData();
@@ -39,12 +47,13 @@ export const VisitorPreRegistration = () => {
     data.append("email", formData.email);
     data.append("purpose", formData.purpose);
     data.append("employeeId", selectedEmployee.value);
-    data.append("visitDate", visitDate.toISOString());
+    data.append("visitDate", visitDate.toISOString().split('T')[0]);
+    data.append("visitTime", visitTime);
     data.append("phone", formData.phone);
     data.append("photo", photo);
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/visitor/pre-register`, data);
-      console.log("Visitor pre-registered successfully:", res.data);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/visitor/pre-register`, data);
+      toast.success("Visitor pre-registered successfully");
       setFormData({
         name: '',
         email: '',
@@ -53,11 +62,12 @@ export const VisitorPreRegistration = () => {
       });
       setSelectedEmployee(null);
       setVisitDate(new Date());
+      setVisitTime('');
       setPhoto(null);
       setPreview(null);
+      navigate('/');
     } catch (error) {
-      console.error("Error pre-registering visitor:", error.response?.data || error);
-      alert(`Failed to pre-register visitor: ${error.response?.data?.message || error.message || "Please try again."}`);
+      toast.error(`Failed to pre-register visitor: ${error.response?.data?.message || error.message || "Please try again."}`);
     }
   }
   useEffect(() => {
@@ -71,14 +81,14 @@ export const VisitorPreRegistration = () => {
           setEmployeeOptions(options);
         })
         .catch(err => {
-          console.error("Error fetching employees:", err);
+          toast.error(`Failed to fetch employees. ${err.response?.data?.message || err.message || "Please try again."}`);
         })
     }
 
     fetchEmployees();
   }, [])
   return (
-    <div className='w-full max-w-[80%] mx-auto'>
+    <div className='w-full max-w-[80%] mx-auto mt-3'>
       <h1 className='text-2xl font-bold'>Visitor Pre-Registration</h1>
       <p className='text-gray-600 mt-2'>Pre-register a visitor by filling out the form below.</p>
       <div className='mt-4'>
@@ -109,7 +119,23 @@ export const VisitorPreRegistration = () => {
             </div>
             <div className='mb-4'>
               <label className='block font-bold mb-2'>Date of Visit</label>
-              <DatePicker className='w-full px-3 py-2 border rounded-md' placeholderText='Select Date' selected={visitDate} onChange={setVisitDate} />
+              <DatePicker
+                className='w-full px-3 py-2 border rounded-md'
+                placeholderText='Select Date'
+                selected={visitDate}
+                onChange={setVisitDate}
+                dateFormat='yyyy-MM-dd'
+              />
+            </div>
+            <div>
+              <label className='block font-bold mb-2'>Time of Visit</label>
+              <input
+                type="time"
+                className='w-full px-3 py-2 border rounded-md'
+                placeholder='Time of Visit'
+                value={visitTime}
+                onChange={(e) => setVisitTime(e.target.value)}
+              />
             </div>
             <div>
               <label className='block font-bold mb-2'>Phone</label>
@@ -133,7 +159,7 @@ export const VisitorPreRegistration = () => {
             </div>
           </div>
           <div>
-            <button type="submit" className='bg-blue-500 text-white px-4 py-2 rounded-md'>Pre-Register Visitor</button>
+            <button type="submit" className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer'>Pre-Register Visitor</button>
           </div>
         </form>
       </div>

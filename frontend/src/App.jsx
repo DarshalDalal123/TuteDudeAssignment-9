@@ -11,6 +11,12 @@ import { useUserContext } from './hooks/useUserContext'
 import { EmployeeList } from './components/Admin/EmployeeList'
 import { AddEmployeeForm } from './components/Admin/AddEmployeeForm'
 import { VisitorList } from './components/Admin/VisitorList'
+import { EmployeeDashboard } from './components/Employee/EmployeeDashboard'
+import { VisitorRequestList } from './components/Employee/VisitorRequestList'
+import { UpcomingVisitors } from './components/Employee/UpcomingVisitors'
+import { SecurityDashboard } from './components/Security/SecurityDashboard'
+import { SecurityList } from './components/Admin/SecurityList'
+import { AddSecurityForm } from './components/Admin/AddSecurityForm'
 
 function App() {
   const navigate = useNavigate();
@@ -30,6 +36,8 @@ function App() {
     
     if (user?.role === 'admin' && (location.pathname === '/' || location.pathname === '/login')) {
       navigate('/admin/dashboard');
+    } else if (user?.role === 'employee' && (location.pathname === '/' || location.pathname === '/login')) {
+      navigate('/employee/dashboard');
     }
   }, [loading, user, location.pathname, navigate]);
 
@@ -39,10 +47,24 @@ function App() {
       <Route path='/login' element={<Login />} />
       <Route path='/visitor/pre-registration' element={<VisitorPreRegistration />} />
       <Route element={<CommonLayout />}>
+        {/* Admin Routes */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/employees" element={<EmployeeList />} />
         <Route path="/admin/employees/add" element={<AddEmployeeForm />} />
         <Route path="/admin/visitors" element={<VisitorList />} />
+        <Route path="/admin/security" element={<SecurityList />} />
+        <Route path="/admin/security/add" element={<AddSecurityForm />} />
+
+        {/* Employee Routes */}
+        <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+        <Route path="/employee/requests" element={<VisitorRequestList />} />
+        <Route path="/employee/upcoming-visitors" element={<UpcomingVisitors />} />
+
+        {/* Security Routes */}        
+        <Route path='/security/dashboard' element={<SecurityDashboard />} />
+
+        {/* 404 */}
+        <Route path="*" element={<div>404</div>} />
       </Route>
     </Routes>
   )

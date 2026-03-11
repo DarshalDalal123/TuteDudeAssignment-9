@@ -20,9 +20,13 @@ const appointmentSchema = new Schema({
     type: Date,
     required: true,
   },
+  visitTime: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
-    enum: ['scheduled', 'completed', 'cancelled'],
+    enum: ['pending', 'scheduled', 'completed', 'cancelled'],
     default: 'scheduled',
   },
 }, { timestamps: true });
