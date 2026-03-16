@@ -1,9 +1,10 @@
-const Visitor = require("../models/Visitor");
-const Appointment = require("../models/Appointment");
-const User = require("../models/User");
-const { sendEmail } = require("../utils/sendEmail");
+import Visitor from "../models/Visitor.js";
+import Appointment from "../models/Appointment.js";
+import User from "../models/User.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import validator from "validator";
 
-exports.preRegisterVisitor = async (req, res) => {
+export const preRegisterVisitor = async (req, res) => {
   try {
     const {
       name,
@@ -15,7 +16,6 @@ exports.preRegisterVisitor = async (req, res) => {
       visitTime
     } = req.body;
 
-    // uploaded image url
     const photo = req.file?.path;
 
     if (!name || !email || !phone || !employeeId || !purpose || !visitDate || !visitTime) {
@@ -32,12 +32,30 @@ exports.preRegisterVisitor = async (req, res) => {
       });
     }
 
-    const visitor = await Visitor.create({
-      name,
-      email,
-      phone,
-      photo
-    });
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+
+    // create a visitor if it doesn't exist or use the existing one
+    let visitor = await Visitor.findOne({ email });
+
+    if (!visitor) {
+      visitor = await Visitor.create({
+        name,
+        email,
+        phone,
+        photo
+      });
+    }
+
+    if (visitor.name !== name || visitor.phone !== phone) {
+      visitor.name = name;
+      visitor.phone = phone;
+      await visitor.save();
+    }
 
     const appointment = await Appointment.create({
       visitorId: visitor._id,
@@ -69,7 +87,7 @@ exports.preRegisterVisitor = async (req, res) => {
       <p>Visit Date: ${visitDate}</p>
       <p>Visit Time: ${visitTime}</p>
       <p>Photo: ${photo}</p>`
-    )
+    );
 
     return res.status(201).json({
       success: true,
@@ -85,17 +103,17 @@ exports.preRegisterVisitor = async (req, res) => {
       error: error.message
     });
   }
-}
+};
 
-exports.getAllEmployees = async (req, res) => {
+export const getAllEmployees = async (req, res) => {
   try {
     const employees = await User.find(
-      { role: 'employee' },
+      { role: "employee" },
       { name: 1 }
     );
     return res.status(200).json({
       success: true,
-      employees: employees
+      employees
     });
   } catch (error) {
     console.error(error);
@@ -105,4 +123,4 @@ exports.getAllEmployees = async (req, res) => {
       error: error.message
     });
   }
-}
+};

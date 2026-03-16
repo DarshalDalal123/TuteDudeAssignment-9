@@ -17,7 +17,7 @@ export const EmployeeDashboard = () => {
       <h1 className='text-3xl font-bold mb-4'>Your Dashboard</h1>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         <div className='bg-white shadow rounded-lg p-4'>
-          <h2 className='text-lg font-semibold mb-2 flex flex-col lg:flex-row lg:items-center gap-2'>Cancelled Approvals</h2>
+          <h2 className='text-lg font-semibold mb-2 flex flex-col lg:flex-row lg:items-center gap-2'>Cancelled Appointments</h2>
           <p className='text-2xl font-bold'>{dashboardStats.stats.cancelledAppointments}</p>
         </div>
         <div className='bg-white shadow rounded-lg p-4'>

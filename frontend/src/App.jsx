@@ -17,6 +17,9 @@ import { UpcomingVisitors } from './components/Employee/UpcomingVisitors'
 import { SecurityDashboard } from './components/Security/SecurityDashboard'
 import { SecurityList } from './components/Admin/SecurityList'
 import { AddSecurityForm } from './components/Admin/AddSecurityForm'
+import { SecurityScanVisitor } from './components/Security/SecurityScanVisitor'
+import { ActiveVisitorsInside } from './components/Security/ActiveVisitorsInside'
+import { VisitorCheckLogs } from './components/Security/VisitorCheckLogs'
 
 function App() {
   const navigate = useNavigate();
@@ -38,6 +41,8 @@ function App() {
       navigate('/admin/dashboard');
     } else if (user?.role === 'employee' && (location.pathname === '/' || location.pathname === '/login')) {
       navigate('/employee/dashboard');
+    } else if (user?.role === 'security' && (location.pathname === '/' || location.pathname === '/login')) {
+      navigate('/security/dashboard');
     }
   }, [loading, user, location.pathname, navigate]);
 
@@ -62,6 +67,9 @@ function App() {
 
         {/* Security Routes */}        
         <Route path='/security/dashboard' element={<SecurityDashboard />} />
+        <Route path='/security/scan' element={<SecurityScanVisitor />} />
+        <Route path='/security/visitors-inside' element={<ActiveVisitorsInside />} />
+        <Route path='/security/logs' element={<VisitorCheckLogs />} />
 
         {/* 404 */}
         <Route path="*" element={<div>404</div>} />

@@ -32,6 +32,14 @@ export const CommonLayout = () => {
                 <li className={`${window.location.pathname === '/employee/upcoming-visitors' ? 'bg-gray-300' : ''} rounded-lg`}><Link to="/employee/upcoming-visitors" className='py-3'>Upcoming Visitors</Link></li>
               </>
             )}
+            {user?.role === 'security' && (
+              <>
+                <li className={`${window.location.pathname === '/security/dashboard' ? 'bg-gray-300' : ''} rounded-lg`}><Link to="/security/dashboard" className='py-3'>Dashboard</Link></li>
+                <li className={`${window.location.pathname === '/security/scan' ? 'bg-gray-300' : ''} rounded-lg`}><Link to="/security/scan" className='py-3'>Scan Visitor</Link></li>
+                <li className={`${window.location.pathname === '/security/visitors-inside' ? 'bg-gray-300' : ''} rounded-lg`}><Link to="/security/visitors-inside" className='py-3'>Visitors Inside</Link></li>
+                <li className={`${window.location.pathname === '/security/logs' ? 'bg-gray-300' : ''} rounded-lg`}><Link to="/security/logs" className='py-3'>Check Logs</Link></li>
+              </>
+            )}
           </ul>
         </div>
       </div>

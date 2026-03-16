@@ -65,6 +65,7 @@ export const VisitorPreRegistration = () => {
       setVisitTime('');
       setPhoto(null);
       setPreview(null);
+      toast.success(res.data.message);
       navigate('/');
     } catch (error) {
       toast.error(`Failed to pre-register visitor: ${error.response?.data?.message || error.message || "Please try again."}`);

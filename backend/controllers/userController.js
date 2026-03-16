@@ -1,20 +1,19 @@
-const mongoose = require('mongoose');
-const User = require('../models/User');
-const validator = require('validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import User from "../models/User.js";
+import validator from "validator";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { name, email, password, role, department, phone } = req.body;
 
-    if (req.user && req.user.role !== 'admin') {
+    if (req.user && req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
         message: "Only admins can create new Employees"
       });
     }
-    
+
     if (!name || !email || !password || !role || !department || !phone) {
       return res.status(400).json({
         success: false,
@@ -36,7 +35,7 @@ exports.signup = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email: email });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({
@@ -47,7 +46,7 @@ exports.signup = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+
     const newUser = await User.create({
       name,
       email,
@@ -68,8 +67,7 @@ exports.signup = async (req, res) => {
         department: newUser.department,
         phone: newUser.phone
       }
-    })
-    
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -78,9 +76,9 @@ exports.signup = async (req, res) => {
       error: error.message
     });
   }
-}
+};
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -98,9 +96,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({
-      email: email
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
@@ -132,9 +128,8 @@ exports.login = async (req, res) => {
         email: user.email,
         role: user.role
       },
-      token: token
+      token
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -143,17 +138,19 @@ exports.login = async (req, res) => {
       error: error.message
     });
   }
-}
+};
 
-exports.getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
   try {
     const { user } = req;
+
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found"
       });
     }
+
     return res.status(200).json({
       success: true,
       user: {
@@ -170,23 +167,25 @@ exports.getUserProfile = async (req, res) => {
       error: error.message
     });
   }
-}
+};
 
-exports.getAllEmployees = async (req, res) => {
+export const getAllEmployees = async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
         message: "Only admins can access this resource"
       });
     }
+
     const employees = await User.find(
-      { role: 'employee' },
+      { role: "employee" },
       { name: 1, email: 1, department: 1, phone: 1 }
     );
+
     return res.status(200).json({
       success: true,
-      employees: employees
+      employees
     });
   } catch (error) {
     console.error(error);
@@ -196,4 +195,4 @@ exports.getAllEmployees = async (req, res) => {
       error: error.message
     });
   }
-}
+};

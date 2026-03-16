@@ -21,6 +21,10 @@ export const useLogin = () => {
             localStorage.setItem('token', res.data.token);
             if (res.data.user.role === 'admin') {
               navigate('/admin/dashboard');
+            } else if (res.data.user.role === 'employee') {
+              navigate('/employee/dashboard');
+            } else if (res.data.user.role === 'security') {
+              navigate('/security/dashboard');
             }
           }
         })
