@@ -1,47 +1,53 @@
-# Visitor Pass Management System (MERN)
+# Visitor Pass Management System
 
-A role-based Visitor Pass Management System built with MongoDB, Express, React, and Node.js.
+A role-based Visitor Pass Management System built with the MERN stack.
+
+## Overview
+
+This project handles visitor pre-registration, employee approval workflow, pass generation, and security gate check-in/check-out.
+
+Supported roles:
+
+- Admin
+- Employee (Host)
+- Security
+- Visitor (pre-registration flow)
+
+## Key Features
+
+- JWT-based authentication and protected APIs
+- Visitor pre-registration with image upload (Cloudinary)
+- Employee review and status updates for visitor appointments
+- QR pass generation and PDF pass email delivery
+- Security scan flow for check-in/check-out logs
+- Dashboard statistics for Admin, Employee, and Security
+
+## Tech Stack
+
+- Frontend: React, Vite, Axios, React Router, Tailwind CSS
+- Backend: Node.js, Express, Mongoose, JWT
+- Database: MongoDB
+- Integrations: Cloudinary, Nodemailer, PDFKit, QRCode
 
 ## Project Structure
 
 ```text
 Assignment 9/
-	backend/    # Express + MongoDB API
-	frontend/   # React + Vite client
+  backend/    Express API + MongoDB models
+  frontend/   React + Vite client
 ```
-
-## Features
-
-- JWT authentication and protected routes
-- Role-based access for:
-	- Admin
-	- Employee (Host)
-	- Security
-	- Visitor pre-registration flow
-- Visitor pre-registration with photo upload (Cloudinary)
-- Employee approval/cancellation of appointments
-- Visitor pass generation (QR + PDF) and email delivery
-- Security scan flow for check-in/check-out
-- Admin and employee dashboard stats
-
-## Tech Stack
-
-- Frontend: React, Vite, TailwindCSS, Axios, React Router
-- Backend: Node.js, Express, Mongoose, JWT
-- Database: MongoDB
-- Integrations: Cloudinary, Nodemailer, QRCode, PDFKit
 
 ## Prerequisites
 
-- Node.js 18+
-- npm 9+
-- MongoDB Atlas URI or local MongoDB instance
-- Cloudinary account
-- Gmail account/App Password for email sending
+- Node.js 18 or above
+- npm 9 or above
+- MongoDB connection string (Atlas or local)
+- Cloudinary account (for visitor photo upload)
+- Gmail account with app password (for email sending)
 
 ## Environment Variables
 
-Create a .env file in backend/:
+Create backend/.env:
 
 ```env
 PORT=5000
@@ -50,101 +56,100 @@ JWT_SECRET=your_jwt_secret
 CLIENT_URL=http://localhost:5173
 
 CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
 EMAIL_USER=your_gmail_address
 EMAIL_PASS=your_gmail_app_password
 ```
 
-Create a .env file in frontend/:
+Create frontend/.env:
 
 ```env
 VITE_API_URL=http://localhost:5000
 ```
 
+Notes:
+
+- Keep CLIENT_URL aligned with your frontend dev URL.
+- EMAIL_USER must be a real Gmail address and EMAIL_PASS should be a Gmail app password.
+
 ## Installation
 
-Install backend dependencies:
+From project root:
 
 ```bash
 cd backend
 npm install
-```
 
-Install frontend dependencies:
-
-```bash
 cd ../frontend
 npm install
 ```
 
-## Run the Application
+## Run Locally
 
-Start backend:
+Start backend server:
 
 ```bash
 cd backend
 npm run dev
 ```
 
-Start frontend (new terminal):
+Start frontend in a separate terminal:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-Frontend will run on http://localhost:5173 and connect to backend at http://localhost:5000.
+Default local URLs:
 
-## API Overview
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
+- API base: http://localhost:5000/api
 
-Base URL: http://localhost:5000/api
+## API Routes (High Level)
 
-### Auth and Users
+### Users
 
-- POST /users/login
-- POST /users/signup (admin only)
-- GET /users/getuser
-- GET /users/allemployees
+- POST /api/users/login
+- POST /api/users/signup (protected)
+- GET /api/users/getuser (protected)
+- GET /api/users/allemployees (protected)
 
 ### Visitor
 
-- POST /visitor/pre-register
-- GET /visitor/allemployees
+- POST /api/visitor/pre-register
+- GET /api/visitor/allemployees
 
 ### Admin
 
-- GET /admin/dashboard-stats
-- GET /admin/getAllVisitors
+- GET /api/admin/dashboard-stats (protected)
+- GET /api/admin/getAllVisitors (protected)
 
 ### Employee
 
-- GET /employee/dashboard-stats
-- GET /employee/getAllVisitors
-- GET /employee/upcoming-visitors
-- PUT /employee/visitor-request/:appointmentId
+- GET /api/employee/dashboard-stats (protected)
+- GET /api/employee/upcoming-visitors (protected)
+- GET /api/employee/getAllVisitors (protected)
+- PUT /api/employee/visitor-request/:appointmentId (protected)
 
 ### Security
 
-- GET /security/getAllSecurities
-- POST /security/updateCheckInOutTime/:qrCode
+- GET /api/security/dashboard (protected)
+- GET /api/security/getAllVisitorsInside (protected)
+- GET /api/security/getAllSecurities (protected)
+- GET /api/security/visitCheckLog (protected)
+- POST /api/security/updateCheckInOutTime/:qrCode (protected)
 
-## Main User Flows
+## Application Flow
 
-1. Visitor pre-registers by filling details and uploading photo.
-2. Employee reviews request and updates appointment status.
-3. On scheduling, system generates QR pass and emails PDF to visitor.
-4. Security scans QR at gate:
-	 - First scan: check-in
-	 - Second scan: check-out
+1. Visitor pre-registers and uploads photo.
+2. Employee receives and reviews the visitor request.
+3. Upon approval, the system generates pass details (QR/PDF) and emails them.
+4. Security scans QR at entry/exit and logs check-in/check-out.
 
-## Notes
-
-- This project currently focuses on core assignment requirements.
-- SMS integration, seed script, and deployment can be added as next steps.
-
-## Scripts
+## Available Scripts
 
 Backend (backend/package.json):
 
@@ -157,13 +162,9 @@ Frontend (frontend/package.json):
 - npm run preview
 - npm run lint
 
-## Deliverables Checklist
+## Assignment Notes
 
-- Source code in GitHub
-- Setup guide (this README)
-- Screenshots and demo video
-- Demo data script (recommended to add)
+- This repository is intended for academic/assignment use.
 
-## License
+## Video Demo
 
-This project is for academic/assignment use.
