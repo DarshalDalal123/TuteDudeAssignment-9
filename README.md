@@ -51,16 +51,14 @@ Create backend/.env:
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+MONGO_URI=mongodb+srv://darshaldalal_db_user:bDVkpGkKEuCYRZUv@cluster0.qhcoqgt.mongodb.net/visitor-management-system?appName=Cluster0
 CLIENT_URL=http://localhost:5173
-
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-
-EMAIL_USER=your_gmail_address
-EMAIL_PASS=your_gmail_app_password
+JWT_SECRET=DarshalDalalSecretKey
+CLOUDINARY_CLOUD_NAME=dvf9xrf7d
+CLOUDINARY_API_KEY=732627493476415
+CLOUDINARY_API_SECRET=i3Vl2koWyKH9cxuTnxFMXKGvn_M
+EMAIL_USER=tempmail3012@gmail.com
+EMAIL_PASS=iyodkucfrgewxubn
 ```
 
 Create frontend/.env:
@@ -107,6 +105,23 @@ Default local URLs:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:5000
 - API base: http://localhost:5000/api
+
+## Demo Login Credentials
+
+Use the following credentials for role-based login:
+
+- Admin
+  - Email: darshaldalal66@gmail.com
+  - Password: Darshal@3012
+- Employee Login 1
+  - Email: darshaldalal@gmail.com
+  - Password: Darshal@123
+- Employee Login 2
+  - Email: darshaldalal456@gmail.com
+  - Password: Darshal@123
+- Security
+  - Email: darshal3012@gmail.com
+  - Password: Darshal@123
 
 ## API Routes (High Level)
 
