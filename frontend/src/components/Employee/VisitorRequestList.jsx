@@ -66,6 +66,7 @@ export const VisitorRequestList = () => {
             visitorEmail={row.visitorId.email}
             visitDate={row.visitDate}
             visitTime={row.visitTime}
+            visitorPhoto={row.visitorId.photo}
             currentStatus={row.status}
             onStatusChange={handleStatusChange}
           />

@@ -48,23 +48,12 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
     
-    // create a visitor if it doesn't exist or use the existing one
-    let visitor = await Visitor.findOne({ email });
-
-    if (!visitor) {
-      visitor = await Visitor.create({
-        name,
-        email,
-        phone,
-        photo
-      });
-    }
-
-    if (visitor.name !== name || visitor.phone !== phone) {
-      visitor.name = name;
-      visitor.phone = phone;
-      await visitor.save();
-    }
+    const visitor = await Visitor.create({
+      name,
+      email,
+      phone,
+      photo
+    });
 
     const appointment = await Appointment.create({
       visitorId: visitor._id,

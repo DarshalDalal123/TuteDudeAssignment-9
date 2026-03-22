@@ -10,6 +10,7 @@ export const ChangeStatusModal = ({
   visitorEmail,
   visitDate,
   visitTime,
+  visitorPhoto,
   currentStatus,
   onStatusChange
 }) => {
@@ -66,6 +67,12 @@ export const ChangeStatusModal = ({
           <p className="py-4">Visit Date: {new Date(visitDate).toLocaleString().split(',')[0]}</p>
           <p className="py-4">Visit Time: {formatVisitTime(visitTime)}</p>
           <p className="py-4">Current Status: {currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}</p>
+          {visitorPhoto && (
+            <div className="py-4">
+              <p className="mb-2">Visitor Photo:</p>
+              <img src={visitorPhoto} alt="Visitor" className="w-32 h-32 object-cover rounded-md" />
+            </div>
+          )}
           <div>
             <label className="block mb-2 font-bold">Change Status:</label>
             <ReactSelect

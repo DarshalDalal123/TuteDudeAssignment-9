@@ -9,7 +9,7 @@ export const Home = () => {
         <Link to="/visitor/pre-registration" className='mt-4 inline-block px-6 py-3 bg-green-600 text-white rounded-lg ml-4 hover:bg-green-700 transition-colors duration-200'>Pre-register</Link>
       </div>
       <div>
-        <p className='mt-6 text-center text-gray-600'>Manage your visitors efficiently with VizManage. Pre-register your visit or log in to view your appointments.</p>
+        <p className='mt-6 text-center text-gray-600'>Manage your visitors efficiently with VizManage. Pre-register your visit.</p>
       </div>
     </div>
   )
