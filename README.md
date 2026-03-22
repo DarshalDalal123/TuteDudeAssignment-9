@@ -180,6 +180,7 @@ Frontend (frontend/package.json):
 ## Assignment Notes
 
 - This repository is intended for academic/assignment use.
+- GitHub Repository: https://github.com/DarshalDalal123/TuteDudeAssignment-9
 
 ## Video Demo
 
