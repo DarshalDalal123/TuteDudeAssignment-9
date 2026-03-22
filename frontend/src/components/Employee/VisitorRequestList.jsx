@@ -1,5 +1,5 @@
 import { useFetch } from '../../hooks/useFetch';
-import DataTable from "react-data-table-component"
+import { CommonDataTable } from "../Common/CommonDataTable";
 import { ChangeStatusModal } from './ChangeStatusModal';
 import { formatVisitTime } from '../../utils/time';
 import { useState } from 'react';
@@ -77,25 +77,27 @@ export const VisitorRequestList = () => {
       button: true
     }
   ]
-  const customStyles = {
-    headCells: {
-      style: {
-        paddingTop: '8px',
-        paddingBottom: '8px',
-      },
-    },
-    cells: {
-      style: {
-        paddingTop: '8px',
-        paddingBottom: '8px',
-      },
-    },
-  };
+  const csvHeaders = [
+    { label: "Name", key: "visitorId.name" },
+    { label: "Email", key: "visitorId.email" },
+    { label: "Phone", key: "visitorId.phone" },
+    { label: "Visit Date", key: "visitDate" },
+    { label: "Visit Time", key: "visitTime" },
+    { label: "Purpose", key: "purpose" },
+    { label: "Status", key: "status" }
+  ]
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Visitor Requests</h2>
       <div>
-        <DataTable columns={columns} data={visitorRequestsData.appointments} customStyles={customStyles} />
+        <CommonDataTable
+          columns={columns}
+          data={visitorRequestsData.appointments}
+          showExportButton={true}
+          csvData={visitorRequestsData.appointments}
+          csvHeaders={csvHeaders}
+          csvFilename="visitors.csv"
+        />
       </div>
     </div>
   )

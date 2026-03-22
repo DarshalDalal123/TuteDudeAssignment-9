@@ -1,5 +1,5 @@
 import { useFetch } from '../../hooks/useFetch';
-import DataTable from "react-data-table-component"
+import { CommonDataTable } from "../Common/CommonDataTable";
 import { formatVisitTime } from '../../utils/time';
 
 export const UpcomingVisitors = () => {
@@ -49,11 +49,28 @@ export const UpcomingVisitors = () => {
     }
   ]
 
+  const csvHeaders = [
+    { label: "Name", key: "visitorId.name" },
+    { label: "Email", key: "visitorId.email" },
+    { label: "Phone", key: "visitorId.phone" },
+    { label: "Visit Date", key: "visitDate" },
+    { label: "Visit Time", key: "visitTime" },
+    { label: "Purpose", key: "purpose" },
+    { label: "Status", key: "status" },
+  ]
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Upcoming Visitors</h2>
       <div>
-        <DataTable columns={columns} data={upcomingVisitorsData.upcomingAppointments} />
+        <CommonDataTable
+          columns={columns}
+          data={upcomingVisitorsData.upcomingAppointments}
+          showExportButton={true}
+          csvData={upcomingVisitorsData.upcomingAppointments}
+          csvHeaders={csvHeaders}
+          csvFilename="upcoming-visitors.csv"
+        />
       </div>
     </div>
   )

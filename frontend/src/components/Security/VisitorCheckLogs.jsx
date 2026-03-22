@@ -1,5 +1,5 @@
 import { useFetch } from "../../hooks/useFetch";
-import DataTableComponent from "react-data-table-component";
+import { CommonDataTable } from "../Common/CommonDataTable";
 import { formatUTCTimeToLocal } from "../../utils/time";
 
 export const VisitorCheckLogs = () => {
@@ -11,10 +11,15 @@ export const VisitorCheckLogs = () => {
   });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+  const csvHeaders = [
+    { label: "Visitor Name", key: "passId.appointmentId.visitorId.name" },
+    { label: "Check-in Time", key: "checkInTime" },
+    { label: "Check-out Time", key: "checkOutTime" },
+  ];
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Visitor Check Logs</h2>
-      <DataTableComponent
+      <CommonDataTable
         columns={[
           {
             name: "Visitor Name",
@@ -31,6 +36,10 @@ export const VisitorCheckLogs = () => {
           }
         ]}
         data={visitCheckLogs.checkLogs}
+        showExportButton={true}
+        csvData={visitCheckLogs.checkLogs}
+        csvHeaders={csvHeaders}
+        csvFilename="visitCheckLogs.csv"
       />
     </div>
   )

@@ -39,6 +39,15 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
 
+    const existingEmployee = await User.findOne({ email: email, role: "employee" });
+
+    if(existingEmployee) {
+      return res.status(400).json({
+        success: false,
+        message: "An employee with this email already exists. Please use a different email."
+      });
+    }
+    
     // create a visitor if it doesn't exist or use the existing one
     let visitor = await Visitor.findOne({ email });
 

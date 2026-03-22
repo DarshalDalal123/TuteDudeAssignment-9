@@ -1,5 +1,5 @@
 import { useFetch } from "../../hooks/useFetch";
-import DataTable from "react-data-table-component"
+import { CommonDataTable } from "../Common/CommonDataTable";
 
 export const VisitorList = () => {
   const { data: visitorData, loading, error } = useFetch(`${import.meta.env.VITE_API_URL}/api/admin/getAllVisitors`, {
@@ -33,25 +33,25 @@ export const VisitorList = () => {
       center: true
     }
   ]
-  const customStyles = {
-    headCells: {
-      style: {
-        paddingTop: '8px',
-        paddingBottom: '8px',
-      },
-    },
-    cells: {
-      style: {
-        paddingTop: '8px',
-        paddingBottom: '8px',
-      },
-    },
-  };
+  const csvHeaders = [
+    { label: "Name", key: "name" },
+    { label: "Email", key: "email" },
+    { label: "Phone", key: "phone" },
+    { label: "Photo", key: "photo" },
+  ];
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Visitor List</h2>
       <div>
-        <DataTable columns={columns} data={visitorData.visitors} customStyles={customStyles}/>
+        <CommonDataTable
+          columns={columns}
+          data={visitorData.visitors}
+          showExportButton={true}
+          csvData={visitorData.visitors}
+          csvHeaders={csvHeaders}
+          csvFilename="visitors.csv"
+        />
       </div>
     </div>
   )
