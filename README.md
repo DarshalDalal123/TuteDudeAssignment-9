@@ -168,3 +168,30 @@ Frontend (frontend/package.json):
 
 ## Video Demo
 
+- Visitor Pre Registration
+
+https://github.com/user-attachments/assets/9fd0ef36-4eeb-460f-acaf-36d9f3abc583
+
+- Employee Login and Seeing Dashboard and Visitor Requests
+
+https://github.com/user-attachments/assets/91b46457-933a-4adb-b437-3169dbba1668
+
+- Approving Visitor Request by the Employee
+
+https://github.com/user-attachments/assets/deff8e1d-d7e4-4665-b807-ec9351322e2d
+
+- Visitor Pass gets sent to the visitor email
+
+<img width="1600" height="577" alt="Screenshot 2026-03-22 221611" src="https://github.com/user-attachments/assets/5ddcec56-b922-4cd9-819e-06f28a68a09f" />
+
+- Security Login and Checking In the visitor using the qr attached in the visitor pass
+
+https://github.com/user-attachments/assets/63c23c9a-b4d7-467e-92d6-a634cf594c4b
+
+- Checking out the visitor using the same qr
+
+https://github.com/user-attachments/assets/772e1030-5ef3-4722-ac7f-0924be69fa39
+
+- Security Dashboard gets updated
+
+<img width="1919" height="868" alt="Screenshot 2026-03-22 222016" src="https://github.com/user-attachments/assets/4d3d487d-cbee-4bf3-9891-3943a5cbc452" />
