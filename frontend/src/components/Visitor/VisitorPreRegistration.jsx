@@ -65,8 +65,7 @@ export const VisitorPreRegistration = () => {
       setVisitTime('');
       setPhoto(null);
       setPreview(null);
-      toast.success(res.data.message);
-      
+      toast.success("Visitor pre-registered successfully! Redirecting to home page...");
     } catch (error) {
       toast.error(`Failed to pre-register visitor: ${error.response?.data?.message || error.message || "Please try again."}`);
     } finally {

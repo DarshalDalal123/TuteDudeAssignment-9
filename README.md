@@ -47,21 +47,23 @@ Assignment 9/
 
 ## Environment Variables
 
-Create backend/.env:
+Create `.env` files using the placeholders from `.env.example`.
+
+Backend `.env` example:
 
 ```env
 PORT=5000
-MONGO_URI=mongodb+srv://darshaldalal_db_user:bDVkpGkKEuCYRZUv@cluster0.qhcoqgt.mongodb.net/visitor-management-system?appName=Cluster0
+MONGO_URI=<your_mongodb_connection_string>
 CLIENT_URL=http://localhost:5173
-JWT_SECRET=DarshalDalalSecretKey
-CLOUDINARY_CLOUD_NAME=dvf9xrf7d
-CLOUDINARY_API_KEY=732627493476415
-CLOUDINARY_API_SECRET=i3Vl2koWyKH9cxuTnxFMXKGvn_M
-EMAIL_USER=tempmail3012@gmail.com
-EMAIL_PASS=iyodkucfrgewxubn
+JWT_SECRET=<your_jwt_secret>
+CLOUDINARY_CLOUD_NAME=<your_cloudinary_cloud_name>
+CLOUDINARY_API_KEY=<your_cloudinary_api_key>
+CLOUDINARY_API_SECRET=<your_cloudinary_api_secret>
+EMAIL_USER=<your_gmail_address>
+EMAIL_PASS=<your_gmail_app_password>
 ```
 
-Create frontend/.env:
+Frontend `.env` example:
 
 ```env
 VITE_API_URL=http://localhost:5000
@@ -108,20 +110,14 @@ Default local URLs:
 
 ## Demo Login Credentials
 
-Use the following credentials for role-based login:
+Seed demo users and credentials locally with:
 
-- Admin
-  - Email: darshaldalal66@gmail.com
-  - Password: Darshal@3012
-- Employee Login 1
-  - Email: darshaldalal@gmail.com
-  - Password: Darshal@123
-- Employee Login 2
-  - Email: darshaldalal456@gmail.com
-  - Password: Darshal@123
-- Security
-  - Email: darshal3012@gmail.com
-  - Password: Darshal@123
+```bash
+cd backend
+npm run seed
+```
+
+The command output prints all demo login credentials and QR codes for testing.
 
 ## API Routes (High Level)
 
