@@ -4,11 +4,12 @@ import { CommonDataTable } from "../Common/CommonDataTable";
 import { NameEmailFilter } from "../Common/NameEmailFilter";
 
 export const VisitorList = () => {
-  const [filters, setFilters] = useState({ name: '', email: '' })
+  const [filters, setFilters] = useState({ name: '', email: '', fromDate: null, toDate: null });
   
   const query = new URLSearchParams({
       ...(filters.name && { name: filters.name }),
-      ...(filters.email && { email: filters.email })
+      ...(filters.email && { email: filters.email }),
+      ...(filters.fromDate && filters.toDate && { fromDate: filters.fromDate.toISOString(), toDate: filters.toDate.toISOString() })
     }).toString()
 
   const endpoint = `${import.meta.env.VITE_API_URL}/api/admin/getAllVisitors${query ? `?${query}` : ''}`

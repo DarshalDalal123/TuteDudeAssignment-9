@@ -7,13 +7,16 @@ import { NameEmailFilter } from '../Common/NameEmailFilter';
 
 export const VisitorRequestList = () => {
   const [refreshKey, setRefreshKey] = useState(0);
-  const [filters, setFilters] = useState({ name: '', email: '' })
+  const [filters, setFilters] = useState({ name: '', email: '', fromDate: null, toDate: null });
   const query = new URLSearchParams({
     ...(filters.name && { name: filters.name }),
-    ...(filters.email && { email: filters.email })
+    ...(filters.email && { email: filters.email }),
+    ...(filters.fromDate && { fromDate: filters.fromDate.toISOString() }),
+    ...(filters.toDate && { toDate: filters.toDate.toISOString() })
   }).toString();
 
   const endpoint = `${import.meta.env.VITE_API_URL}/api/employee/getAllVisitors${query ? `?${query}&` : '?'}refresh=${refreshKey}`;
+  
   const { data: visitorRequestsData, loading, error } = useFetch(endpoint, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`

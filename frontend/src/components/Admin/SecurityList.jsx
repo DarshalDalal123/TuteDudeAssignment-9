@@ -5,12 +5,14 @@ import { NameEmailFilter } from '../Common/NameEmailFilter';
 import { useState } from 'react';
 
 export const SecurityList = () => {
-  const [filters, setFilters] = useState({ name: '', email: '' })
+  const [filters, setFilters] = useState({ name: '', email: '', fromDate: '', toDate: '' });
 
   const query = new URLSearchParams({
     ...(filters.name && { name: filters.name }),
-    ...(filters.email && { email: filters.email })
-  }).toString()
+    ...(filters.email && { email: filters.email }),
+    ...(filters.fromDate && { fromDate: filters.fromDate }),
+    ...(filters.toDate && { toDate: filters.toDate }),
+  }).toString();
 
   const endpoint = `${import.meta.env.VITE_API_URL}/api/security/getAllSecurities${query ? `?${query}` : ''}`
   const { data: securities, loading, error } = useFetch(endpoint, {
@@ -49,7 +51,7 @@ export const SecurityList = () => {
         <div>
           <NameEmailFilter getFilterValues={setFilters} />
         </div>
-        <Link to='/admin/security/add' className='bg-green-500 text-white py-2 px-4 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer rounded-xl'>
+        <Link to='/admin/security/add' className='bg-green-500 text-white py-2 px-4 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer rounded-xl ml-5'>
           Add Security
         </Link>
       </div>

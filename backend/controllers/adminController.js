@@ -40,7 +40,7 @@ export const getDashboardStats = async (req, res) => {
 export const getAllVisitors = async (req, res) => {
   try {
     // Get name and email from query parameters for filtering
-    const { name, email } = req.query;
+    const { name, email, fromDate, toDate } = req.query;
     // Only admin can access this endpoint
     if (req.user.role !== "admin") {
       return res.status(403).json({
@@ -56,6 +56,12 @@ export const getAllVisitors = async (req, res) => {
     }
     if (email) {
       filter.email = { $regex: email, $options: "i" };
+    }
+    if (fromDate && toDate) {
+      filter.createdAt = {
+        $gte: new Date(fromDate).setHours(0, 0, 0, 0),
+        $lte: new Date(toDate).setHours(23, 59, 59, 999)
+      };
     }
 
     // Fetch visitors based on filter but return all visitors if no filter is applied

@@ -5,11 +5,12 @@ import { useFetch } from '../../hooks/useFetch';
 import { NameEmailFilter } from '../Common/NameEmailFilter';
 
 export const EmployeeList = () => {
-  const [filters, setFilters] = useState({ name: '', email: '' })
+  const [filters, setFilters] = useState({ name: '', email: '', fromDate: '', toDate: '' })
 
   const query = new URLSearchParams({
     ...(filters.name && { name: filters.name }),
-    ...(filters.email && { email: filters.email })
+    ...(filters.email && { email: filters.email }),
+    ...(filters.fromDate && filters.toDate && { fromDate: filters.fromDate, toDate: filters.toDate })
   }).toString()
 
   const endpoint = `${import.meta.env.VITE_API_URL}/api/users/allemployees${query ? `?${query}` : ''}`
@@ -58,7 +59,7 @@ export const EmployeeList = () => {
       <h1 className='font-bold text-3xl'>Employee List</h1>
       <div className='flex flex-row justify-end my-5'>
         <NameEmailFilter getFilterValues={setFilters} />
-        <Link to='/admin/employees/add' className='bg-green-500 text-white py-2 px-4 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer rounded-xl'>
+        <Link to='/admin/employees/add' className='bg-green-500 text-white py-2 px-4 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer rounded-xl ml-4'>
           Add Employee
         </Link>
       </div>

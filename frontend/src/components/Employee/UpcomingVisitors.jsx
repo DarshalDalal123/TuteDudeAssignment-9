@@ -5,12 +5,7 @@ import { NameEmailFilter } from '../Common/NameEmailFilter';
 import { useState } from 'react';
 
 export const UpcomingVisitors = () => {
-  const [filters, setFilters] = useState({ name: '', email: '' })
-  const query = new URLSearchParams({
-    ...(filters.name && { name: filters.name }),
-    ...(filters.email && { email: filters.email })
-  }).toString();
-  const endpoint = `${import.meta.env.VITE_API_URL}/api/employee/upcoming-visitors${query ? `?${query}` : ''}`;
+  const endpoint = `${import.meta.env.VITE_API_URL}/api/employee/upcoming-visitors`;
   const { data: upcomingVisitorsData, loading, error } = useFetch(endpoint, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -70,9 +65,6 @@ export const UpcomingVisitors = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Upcoming Visitors</h2>
-      <div className="mb-4 flex justify-end">
-        <NameEmailFilter getFilterValues={setFilters} />
-      </div>
       <div>
         <CommonDataTable
           columns={columns}

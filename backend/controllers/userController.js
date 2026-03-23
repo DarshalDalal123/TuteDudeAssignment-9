@@ -191,7 +191,7 @@ export const getUserProfile = async (req, res) => {
 export const getAllEmployees = async (req, res) => {
   try {
     // Extract query parameters for filtering
-    const { name, email } = req.query;
+    const { name, email, fromDate, toDate } = req.query;
 
     // Only admins can access this resource
     if (req.user.role !== "admin") {
@@ -208,6 +208,12 @@ export const getAllEmployees = async (req, res) => {
     }
     if (email) {
       filter.email = { $regex: email, $options: "i" };
+    }
+    if (fromDate && toDate) {
+      filter.createdAt = {
+        $gte: new Date(fromDate).setHours(0, 0, 0, 0),
+        $lte: new Date(toDate).setHours(23, 59, 59, 999)
+      };
     }
 
     // Fetch employees from database based on filter

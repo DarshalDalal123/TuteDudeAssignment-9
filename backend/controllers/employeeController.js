@@ -70,7 +70,7 @@ export const employeeDashboardStats = async (req, res) => {
 export const getAllVisitorsByEmployeeID = async (req, res) => {
   try {
     // Get name and email from query parameters for filtering
-    const { name, email } = req.query;
+    const { name, email, fromDate, toDate } = req.query;
 
     // Only employee can access this endpoint
     if (req.user.role !== "employee") {
@@ -91,7 +91,12 @@ export const getAllVisitorsByEmployeeID = async (req, res) => {
     if (email) {
       filter["visitorId.email"] = { $regex: email, $options: "i" };
     }
-
+    if (fromDate && toDate) {
+      filter.visitDate = {
+        $gte: new Date(fromDate).setHours(0, 0, 0, 0),
+        $lte: new Date(toDate).setHours(23, 59, 59, 999)
+      };
+    }
 
     // Fetch appointments based on filter but return all appointments for the employee if no filter is applied
     const appointments = await Appointment.find({
@@ -115,8 +120,6 @@ export const getAllVisitorsByEmployeeID = async (req, res) => {
 
 export const getUpcomingVisitorsByEmployeeID = async (req, res) => {
   try {
-    // Get name and email from query parameters for filtering
-    const { name, email } = req.query;
     // Only employee can access this endpoint
     if (req.user.role !== "employee") {
       return res.status(403).json({
@@ -128,18 +131,8 @@ export const getUpcomingVisitorsByEmployeeID = async (req, res) => {
     // Get employee ID from authenticated user
     const employeeID = req.user._id;
 
-    // Build filter object based on query parameters
-    const filter = {};
-    if (name) {
-      filter["visitorId.name"] = { $regex: name, $options: "i" };
-    }
-    if (email) {
-      filter["visitorId.email"] = { $regex: email, $options: "i" };
-    }
-
     // Fetch appointments based on filter but return all upcoming appointments for the employee if no filter is applied
     const upcomingAppointments = await Appointment.find({
-      ...filter,
       employeeId: employeeID,
       status: "scheduled",
       visitDate: { $gte: new Date().setHours(0, 0, 0, 0) }

@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-export const NameEmailFilter = ({ getFilterValues = () => {} }) => {
-  const [filters, setFilters] = useState({ name: '', email: '' })
-  const modalRef = useRef(null)
+export const NameEmailFilter = ({ getFilterValues = () => { } }) => {
+  const [filters, setFilters] = useState({ name: '', email: '', fromDate: null, toDate: null });
+  const modalRef = useRef(null);
 
   const onChange = (field) => (event) => {
     setFilters((prev) => ({ ...prev, [field]: event.target.value }))
@@ -11,22 +13,24 @@ export const NameEmailFilter = ({ getFilterValues = () => {} }) => {
   const applyFilter = () => {
     getFilterValues({
       name: filters.name.trim(),
-      email: filters.email.trim()
+      email: filters.email.trim(),
+      fromDate: filters.fromDate,
+      toDate: filters.toDate
     })
     modalRef.current?.close()
   }
 
   const clearFilter = () => {
-    const emptyFilters = { name: '', email: '' }
-    setFilters(emptyFilters)
-    getFilterValues(emptyFilters)
-    modalRef.current?.close()
+    const emptyFilters = { name: '', email: '', fromDate: null, toDate: null };
+    setFilters(emptyFilters);
+    getFilterValues(emptyFilters);
+    modalRef.current?.close();
   }
 
   return (
     <>
       <button
-        className="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700 mr-2"
+        className="inline-flex items-center rounded-xl bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700 cursor-pointer"
         onClick={() => modalRef.current?.showModal()}
       >
         Filter
@@ -53,8 +57,35 @@ export const NameEmailFilter = ({ getFilterValues = () => {} }) => {
               onChange={onChange('email')}
             />
           </div>
+          <div className='mb-4'>
+            <label className='block font-bold mb-2'>From Date</label>
+            <DatePicker
+              className='w-full px-3 py-2 border rounded-md'
+              placeholderText='Select Date'
+              selected={filters.fromDate}
+              onChange={(date) => setFilters({ ...filters, fromDate: date })}
+              dateFormat='yyyy-MM-dd'
+            />
+          </div>
+          <div className='mb-4'>
+            <label className='block font-bold mb-2'>To Date</label>
+            <DatePicker
+              className='w-full px-3 py-2 border rounded-md'
+              placeholderText='Select Date'
+              selected={filters.toDate}
+              onChange={(date) => setFilters({ ...filters, toDate: date })}
+              dateFormat='yyyy-MM-dd'
+              excludeDateIntervals={filters.fromDate ? [{ start: new Date(0), end: filters.fromDate }] : []}
+            />
+          </div>
           <div className="modal-action gap-2">
-            <button className="btn btn-primary" onClick={applyFilter}>Apply</button>
+            <button
+              className="btn btn-primary"
+              onClick={applyFilter}
+              disabled={Boolean(filters.fromDate && !filters.toDate)}
+            >
+              Apply
+            </button>
             <button className="btn" onClick={clearFilter}>Clear</button>
             <form method="dialog">
               <button className="btn">Close</button>
