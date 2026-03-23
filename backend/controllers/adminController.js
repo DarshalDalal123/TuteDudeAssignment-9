@@ -4,6 +4,7 @@ import Appointment from "../models/Appointment.js";
 
 export const getDashboardStats = async (req, res) => {
   try {
+    // Only admin can access this endpoint
     if (req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -11,6 +12,7 @@ export const getDashboardStats = async (req, res) => {
       });
     }
 
+    // Get counts of various entities for dashboard stats
     const totalVisitors = await Visitor.countDocuments();
     const totalEmployees = await User.countDocuments({ role: "employee" });
     const totalSecurityGuards = await User.countDocuments({ role: "security" });
@@ -37,6 +39,9 @@ export const getDashboardStats = async (req, res) => {
 
 export const getAllVisitors = async (req, res) => {
   try {
+    // Get name and email from query parameters for filtering
+    const { name, email } = req.query;
+    // Only admin can access this endpoint
     if (req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -44,14 +49,17 @@ export const getAllVisitors = async (req, res) => {
       });
     }
 
-    const visitors = await Visitor.find();
-
-    if (!visitors || visitors.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No visitors found"
-      });
+    // Build filter object based on query parameters
+    const filter = {};
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
     }
+    if (email) {
+      filter.email = { $regex: email, $options: "i" };
+    }
+
+    // Fetch visitors based on filter but return all visitors if no filter is applied
+    const visitors = await Visitor.find(filter);
 
     return res.status(200).json({
       success: true,

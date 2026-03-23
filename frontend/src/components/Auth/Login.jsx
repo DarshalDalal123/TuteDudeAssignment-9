@@ -9,9 +9,11 @@ export const Login = () => {
     e.preventDefault();
     await login(email, password);
   }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
-      {isLoading && <div>Loading...</div>}
       <div className='flex items-center justify-center h-screen max-h-dvh w-screen max-w-dvw'>
         <div className='border border-gray-300 rounded-lg flex flex-col p-6 w-full max-w-md'>
           <h1 className='text-3xl font-bold mb-4 text-center'>VizManage</h1>

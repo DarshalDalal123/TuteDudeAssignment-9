@@ -6,6 +6,7 @@ import validator from "validator";
 
 export const preRegisterVisitor = async (req, res) => {
   try {
+    // Extract visitor details from request body
     const {
       name,
       email,
@@ -16,8 +17,10 @@ export const preRegisterVisitor = async (req, res) => {
       visitTime
     } = req.body;
 
+    // Extract photo from request file
     const photo = req.file?.path;
 
+    // Validate required fields
     if (!name || !email || !phone || !employeeId || !purpose || !visitDate || !visitTime) {
       return res.status(400).json({
         success: false,
@@ -25,6 +28,7 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
 
+    // Validate photo upload
     if (!photo) {
       return res.status(400).json({
         success: false,
@@ -32,6 +36,7 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
 
+    // Validate email format
     if (!validator.isEmail(email)) {
       return res.status(400).json({
         success: false,
@@ -39,8 +44,10 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
 
+    // Check if an employee with the same email already exists
     const existingEmployee = await User.findOne({ email: email, role: "employee" });
 
+    // If an employee with the same email exists, return an error
     if(existingEmployee) {
       return res.status(400).json({
         success: false,
@@ -48,6 +55,7 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
     
+    // Create new visitor and appointment records in the database
     const visitor = await Visitor.create({
       name,
       email,
@@ -55,6 +63,7 @@ export const preRegisterVisitor = async (req, res) => {
       photo
     });
 
+    // Create appointment record in the database
     const appointment = await Appointment.create({
       visitorId: visitor._id,
       employeeId,
@@ -64,9 +73,11 @@ export const preRegisterVisitor = async (req, res) => {
       status: "pending"
     });
 
+    // Fetch employee email from database
     const employee = await User.findById(employeeId);
     const employeeMail = employee?.email;
 
+    // If employee email not found, return error
     if (!employeeMail) {
       return res.status(404).json({
         success: false,
@@ -74,6 +85,7 @@ export const preRegisterVisitor = async (req, res) => {
       });
     }
 
+    // Send email notification to the employee about the visitor pre-registration
     await sendEmail(
       employeeMail,
       "Visitor Pre-Registration",
@@ -105,10 +117,12 @@ export const preRegisterVisitor = async (req, res) => {
 
 export const getAllEmployees = async (req, res) => {
   try {
+    // Extract query parameters for filtering
     const employees = await User.find(
       { role: "employee" },
       { name: 1 }
     );
+    
     return res.status(200).json({
       success: true,
       employees

@@ -1,8 +1,19 @@
+import { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { CommonDataTable } from "../Common/CommonDataTable";
+import { NameEmailFilter } from "../Common/NameEmailFilter";
 
 export const VisitorList = () => {
-  const { data: visitorData, loading, error } = useFetch(`${import.meta.env.VITE_API_URL}/api/admin/getAllVisitors`, {
+  const [filters, setFilters] = useState({ name: '', email: '' })
+  
+  const query = new URLSearchParams({
+      ...(filters.name && { name: filters.name }),
+      ...(filters.email && { email: filters.email })
+    }).toString()
+
+  const endpoint = `${import.meta.env.VITE_API_URL}/api/admin/getAllVisitors${query ? `?${query}` : ''}`
+
+  const { data: visitorData, loading, error } = useFetch(endpoint, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }
@@ -43,6 +54,9 @@ export const VisitorList = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Visitor List</h2>
+      <div className="flex justify-end mb-4">
+        <NameEmailFilter getFilterValues={setFilters} />
+      </div>
       <div>
         <CommonDataTable
           columns={columns}

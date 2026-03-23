@@ -3,10 +3,18 @@ import { CommonDataTable } from "../Common/CommonDataTable";
 import { ChangeStatusModal } from './ChangeStatusModal';
 import { formatVisitTime } from '../../utils/time';
 import { useState } from 'react';
+import { NameEmailFilter } from '../Common/NameEmailFilter';
 
 export const VisitorRequestList = () => {
   const [refreshKey, setRefreshKey] = useState(0);
-  const { data: visitorRequestsData, loading, error } = useFetch(`${import.meta.env.VITE_API_URL}/api/employee/getAllVisitors?refresh=${refreshKey}`, {
+  const [filters, setFilters] = useState({ name: '', email: '' })
+  const query = new URLSearchParams({
+    ...(filters.name && { name: filters.name }),
+    ...(filters.email && { email: filters.email })
+  }).toString();
+
+  const endpoint = `${import.meta.env.VITE_API_URL}/api/employee/getAllVisitors${query ? `?${query}&` : '?'}refresh=${refreshKey}`;
+  const { data: visitorRequestsData, loading, error } = useFetch(endpoint, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }
@@ -90,6 +98,9 @@ export const VisitorRequestList = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Visitor Requests</h2>
+      <div className="mb-4 flex justify-end">
+        <NameEmailFilter getFilterValues={setFilters} />
+      </div>
       <div>
         <CommonDataTable
           columns={columns}

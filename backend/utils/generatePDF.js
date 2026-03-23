@@ -2,6 +2,8 @@ const PDFDocument = require("pdfkit");
 const QRCode = require("qrcode");
 
 const generatePassPDF = async (visitor, appointment, passId) => {
+  // Generate a PDF document for the visitor pass with visitor details, appointment details, and a QR code for the pass ID
+  // Used Promise to handle the asynchronous nature of PDF generation and return the PDF as a buffer
   return new Promise(async (resolve) => {
     const doc = new PDFDocument({ size: "A6", margin: 20 });
     const buffers = [];

@@ -3,8 +3,10 @@ const { transporter } = require("../utils/sendEmail");
 
 const sendVisitorPass = async (visitor, appointment, passId) => {
 
+  // Generate the visitor pass PDF and send it as an email attachment to the visitor
   const pdfBuffer = await generatePassPDF(visitor, appointment, passId);
 
+  // Send email with PDF attachment
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: visitor.email,

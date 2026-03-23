@@ -1,9 +1,19 @@
 import { useFetch } from '../../hooks/useFetch';
 import { Link } from 'react-router-dom'
 import { CommonDataTable } from "../Common/CommonDataTable";
+import { NameEmailFilter } from '../Common/NameEmailFilter';
+import { useState } from 'react';
 
 export const SecurityList = () => {
-  const { data: securities, loading, error } = useFetch(`${import.meta.env.VITE_API_URL}/api/security/getAllSecurities`, {
+  const [filters, setFilters] = useState({ name: '', email: '' })
+
+  const query = new URLSearchParams({
+    ...(filters.name && { name: filters.name }),
+    ...(filters.email && { email: filters.email })
+  }).toString()
+
+  const endpoint = `${import.meta.env.VITE_API_URL}/api/security/getAllSecurities${query ? `?${query}` : ''}`
+  const { data: securities, loading, error } = useFetch(endpoint, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }
@@ -36,6 +46,9 @@ export const SecurityList = () => {
     <div>
       <h1 className='font-bold text-3xl'>Security List</h1>
       <div className='flex flex-row justify-end my-5'>
+        <div>
+          <NameEmailFilter getFilterValues={setFilters} />
+        </div>
         <Link to='/admin/security/add' className='bg-green-500 text-white py-2 px-4 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer rounded-xl'>
           Add Security
         </Link>

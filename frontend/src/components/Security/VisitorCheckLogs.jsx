@@ -28,7 +28,9 @@ export const VisitorCheckLogs = () => {
           },
           {
             name: "Check-in Time",
-            selector: (row) => formatUTCTimeToLocal(row.checkInTime)
+            selector: (row) => (
+              row.checkInTime ? formatUTCTimeToLocal(row.checkInTime) : "N/A"
+            )
           },
           {
             name: "Check-out Time",

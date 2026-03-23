@@ -5,6 +5,7 @@ import Appointment from "../models/Appointment.js";
 
 export const securityDashboard = async (req, res) => {
   try {
+    // Only security guards can access this endpoint
     if (req.user.role !== "security") {
       return res.status(403).json({
         success: false,
@@ -12,6 +13,7 @@ export const securityDashboard = async (req, res) => {
       });
     }
 
+    // Get counts of various stats for the security dashboard
     const totalCheckInsToday = await CheckLogs.countDocuments({
       checkInTime: {
         $gte: new Date().setHours(0, 0, 0, 0),
@@ -53,6 +55,7 @@ export const securityDashboard = async (req, res) => {
 
 export const getAllVisitorsInside = async (req, res) => {
   try {
+    // Only security guards can access this endpoint
     if (req.user.role !== "security") {
       return res.status(403).json({
         success: false,
@@ -60,6 +63,7 @@ export const getAllVisitorsInside = async (req, res) => {
       });
     }
 
+    // Get all visitors who are currently inside the premises (checked in but not checked out)
     const visitorsInside = await CheckLogs.find({
       checkInTime: { $ne: null },
       checkOutTime: null
@@ -89,6 +93,9 @@ export const getAllVisitorsInside = async (req, res) => {
 
 export const getAllSecurities = async (req, res) => {
   try {
+    // Get name and email from query parameters for filtering
+    const { name, email } = req.query;
+    // Only admin can access this endpoint
     if (req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -96,14 +103,17 @@ export const getAllSecurities = async (req, res) => {
       });
     }
 
-    const securities = await User.find({ role: "security" }).select("-password");
-
-    if (!securities || securities.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No security personnel found"
-      });
+    // Build filter object based on query parameters
+    const filter = { role: "security" };
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
     }
+    if (email) {
+      filter.email = { $regex: email, $options: "i" };
+    }
+
+    // Fetch security guards based on filter but return all security guards if no filter is applied
+    const securities = await User.find(filter).select("-password");
 
     return res.status(200).json({
       success: true,
@@ -120,8 +130,10 @@ export const getAllSecurities = async (req, res) => {
 
 export const updateCheckInOutTime = async (req, res) => {
   try {
+    // Get QR code data from request parameters
     const { qrCode } = req.params;
 
+    // Only security guards can access this endpoint
     if (req.user.role !== "security") {
       return res.status(403).json({
         success: false,
@@ -129,8 +141,10 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // Find the pass associated with the QR code and populate appointment details
     const pass = await Pass.findOne({ qrCodeData: qrCode }).populate("appointmentId");
 
+    // If no pass is found, return an error response
     if (!pass) {
       return res.status(404).json({
         success: false,
@@ -138,6 +152,7 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // If pass is found but not active, return an error response
     if (pass.status !== "active") {
       return res.status(400).json({
         success: false,
@@ -145,6 +160,7 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // Check if the pass has expired based on validTo field and update status if expired
     const now = new Date();
 
     if (pass.validTo && now > pass.validTo) {
@@ -157,8 +173,10 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // Check if a check log already exists for this pass
     const checkLog = await CheckLogs.findOne({ passId: pass._id });
 
+    // If no check log exists, create a new check log with check-in time
     if (!checkLog) {
       const newCheckLog = new CheckLogs({
         passId: pass._id,
@@ -175,6 +193,7 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // If check log exists but check-in time is not set, set the check-in time
     if (!checkLog.checkInTime) {
       checkLog.checkInTime = now;
       checkLog.securityId = req.user._id;
@@ -187,6 +206,7 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // If check log exists and check-in time is set but check out is also set, return an error response as visitor has already checked out
     if (checkLog.checkOutTime) {
       return res.status(409).json({
         success: false,
@@ -194,13 +214,16 @@ export const updateCheckInOutTime = async (req, res) => {
       });
     }
 
+    // Set the check-out time and update pass status to expired
     checkLog.checkOutTime = now;
     checkLog.securityId = req.user._id;
     await checkLog.save();
 
+    // Update pass status to expired upon check-out
     pass.status = "expired";
     await pass.save();
 
+    // Update the status of the associated appointment to "completed"
     if (pass.appointmentId?._id) {
       await Appointment.findByIdAndUpdate(pass.appointmentId._id, {
         status: "completed"
@@ -223,6 +246,7 @@ export const updateCheckInOutTime = async (req, res) => {
 
 export const visitCheckLog = async (req, res) => {
   try {
+    // Only security guards can access this endpoint
     if (req.user.role !== "security") {
       return res.status(403).json({
         success: false,
@@ -230,6 +254,7 @@ export const visitCheckLog = async (req, res) => {
       });
     }
 
+    // Fetch all check logs and populate visitor details for each log
     const checkLogs = await CheckLogs.find().populate({
       path: "passId",
       populate: {
