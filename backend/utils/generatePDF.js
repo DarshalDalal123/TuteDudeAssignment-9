@@ -19,6 +19,14 @@ const generatePassPDF = async (visitor, appointment, passId) => {
     doc.text(`Date: ${appointment.visitDate.toDateString()}`);
     doc.text(`Time: ${appointment.visitTime}`);
     doc.moveDown();
+    doc.image(
+      visitor.photo || "https://placehold.co/150x150?text=No+Photo",
+      {
+        fit: [150, 150],
+        align: "center"
+      }
+    )
+    doc.moveDown();
     doc.image(qr, {
       fit: [120, 120],
       align: "center"
